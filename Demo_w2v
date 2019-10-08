@@ -1,0 +1,48 @@
+# 2. Cai dat thuan toan Word2vec Model dung thu vien gensim
+import bs4 as bs
+import urllib.request
+import re
+import nltk
+import string
+
+article_text="the dog saw a cat. the dog chased the cat . the cat climbed a tree"
+
+# Cleaing the text
+processed_article = article_text.lower()
+processed_article = re.sub('[^a-zA-Z]', ' ', processed_article )
+processed_article = re.sub(r'\s+', ' ', processed_article)
+
+# Preparing the dataset
+import collections
+all_words=processed_article.split()
+word_counts=collections.Counter(all_words)
+all=[[words for words in sorted(word_counts)]]
+    
+# Python program to sort a list of strings 
+#vocabulary.sort()
+# Using sort() function 
+#vocabulary.sort() 
+#print(vocabulary)
+
+num_features = 3  # Word vector dimensionality # So chieu cua vector tu
+min_word_count = 0 # Minimum word count # So tu xuat hien toi thieu
+num_workers = 2     # Number of parallel threads #
+context = 3       # Context window size # Kich thuoc cua so ngu canh
+downsampling = 1e-3 # (0.001) Downsample setting for frequent words # Cai dat mau cho cac tu thuong xuyen
+from gensim.models import Word2Vec
+word2vec = Word2Vec(all,\
+                          workers=num_workers,\
+                          size=num_features,\
+                          min_count=min_word_count,\
+                          window=context,
+                          sample=downsampling)
+vocabulary = word2vec.wv.vocab
+print(vocabulary)
+v1 = word2vec.wv['cat']
+v2 = word2vec.wv['climbed']
+sim_words = word2vec.wv.most_similar('climbed')
+
+article_text="the dog saw a cat. the dog chased the cat . the cat climbed a tree"
+
+word2vec.similarity("climbed", "cat")
+word2vec.most_similar("dog")
